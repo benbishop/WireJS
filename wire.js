@@ -21,8 +21,12 @@ $(document).ready(function () {
             "screen/:screen_num":"screen"
         },
 
-        screen:function (screen_num) {
-            wireApp.appState.setCurrentScreenIndex(screen_num);
+        screen:function (screenIndexOrID) {
+            if(isNaN(parseInt(screenIndexOrID))){
+                wireApp.appState.setCurrentScreenIndex($('#' + screenIndexOrID).index());
+            }else{
+                wireApp.appState.setCurrentScreenIndex(screenIndexOrID);
+            }
         }
     })
 
@@ -122,6 +126,9 @@ $(document).ready(function () {
             log(this.el);
 
         },
+        events:{
+            "click .btn":"onButtonClick"
+        },
         getScreenIndex:function () {
             return $(this.el).index();
         },
@@ -130,6 +137,20 @@ $(document).ready(function () {
             var totalScreensNum = this.model.getTotalNumOfScreens() + 1;
             this.model.setTotalNumOfScreens(totalScreensNum);
             this.render();
+        },
+        onButtonClick:function (event) {
+            if (isNaN(parseInt($(event.target).attr('nav-to')))) {
+                this.navToScreenId($(event.target).attr('nav-to'));
+            } else {
+                this.navToScreenIndex(parseInt($(event.target).attr('nav-to')))
+            }
+
+        },
+        navToScreenId:function (id) {
+            wireApp.router.navigate("screen/" + id);
+        },
+        navToScreenIndex:function (screenIndex) {
+            wireApp.router.navigate("screen/" + screenIndex);
         },
         render:function () {
 
@@ -145,6 +166,7 @@ $(document).ready(function () {
     Wire.PreviousScreenButton = Backbone.View.extend({
         el:$('.prevScreenButton'),
         model:wireApp.appState,
+
         events:{
             "click":"onClick"
         },
