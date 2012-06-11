@@ -93,13 +93,15 @@ $(document).ready(function () {
                 }
             };
         },
-        render:function () {
+        onContentRendered:function () {
             this.renderPartials();
             this.initNavTos();
         },
         renderPartials:function () {
+
             var partialDivs = $(this.el).find(".partial");
             for (var i = 0; i < partialDivs.length; i++) {
+
                 var partial = new Wire.ExternalContentView({el:partialDivs[i]});
                 partial.initExternalContent();
             }
@@ -108,6 +110,7 @@ $(document).ready(function () {
             var navToDivs = $(this.el).find(".navTo");
             for (var i = 0; i < navToDivs.length; i++) {
                 new Wire.NavToElement({el:navToDivs[i]});
+
             }
         }
     })
@@ -142,6 +145,8 @@ $(document).ready(function () {
             this.model.bind('change:currentScreenIndex', this.render, this)
             var totalScreensNum = this.model.getTotalNumOfScreens() + 1;
             this.model.setTotalNumOfScreens(totalScreensNum);
+            this.renderPartials();
+            this.initNavTos();
             this.render();
         },
         render:function () {
@@ -152,8 +157,7 @@ $(document).ready(function () {
                 $(this.el).addClass('hidden');
             }
 
-            this.renderPartials();
-            this.initNavTos();
+
         }
     })
 
