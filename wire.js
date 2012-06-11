@@ -95,12 +95,19 @@ $(document).ready(function () {
         },
         render:function () {
             this.renderPartials();
+            this.initNavTos();
         },
         renderPartials:function () {
             var partialDivs = $(this.el).find(".partial");
             for (var i = 0; i < partialDivs.length; i++) {
                 var partial = new Wire.ExternalContentView({el:partialDivs[i]});
                 partial.initExternalContent();
+            }
+        },
+        initNavTos:function(){
+            var navToDivs = $(this.el).find(".navTo");
+            for (var i = 0; i < navToDivs.length; i++) {
+                new Wire.NavToElement({el:navToDivs[i]});
             }
         }
     })
@@ -110,10 +117,6 @@ $(document).ready(function () {
     Wire.AppView = Backbone.View.extend({
         el:$('#appView'),
         model:wireApp.appState,
-        events:{
-
-
-        },
         initialize:function () {
             log('init appView')
             this.model.bind('change', this.render, this);
@@ -132,9 +135,6 @@ $(document).ready(function () {
             log(this.el);
 
         },
-        events:{
-            "click .btn":"onButtonClick"
-        },
         getScreenIndex:function () {
             return $(this.el).index();
         },
@@ -143,13 +143,6 @@ $(document).ready(function () {
             var totalScreensNum = this.model.getTotalNumOfScreens() + 1;
             this.model.setTotalNumOfScreens(totalScreensNum);
             this.render();
-        },
-        onButtonClick:function (event) {
-            if($(event.target).attr('nav-to') != null && $(event.target).attr('nav-to') != ''){
-                wireApp.router.navigate("screen/" + $(event.target).attr('nav-to'), {trigger:true});
-            }
-
-
         },
         render:function () {
 
@@ -160,7 +153,24 @@ $(document).ready(function () {
             }
 
             this.renderPartials();
+            this.initNavTos();
         }
+    })
+
+    Wire.NavToElement = Backbone.View.extend({
+
+        initialize:function(){
+            $(this.el).click(this.createClickHandler(this.el));
+        },
+        createClickHandler:function(element){
+            var element = element;
+            return function(){
+                if($(element).attr('nav-to') != null && $(element).attr('nav-to') != ''){
+                    wireApp.router.navigate("screen/" + $(element).attr('nav-to'), {trigger:true});
+                }
+            }
+        }
+
     })
 
     Wire.PreviousScreenButton = Backbone.View.extend({
