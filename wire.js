@@ -145,18 +145,11 @@ $(document).ready(function () {
             this.render();
         },
         onButtonClick:function (event) {
-            if (isNaN(parseInt($(event.target).attr('nav-to')))) {
-                this.navToScreenId($(event.target).attr('nav-to'));
-            } else {
-                this.navToScreenIndex(parseInt($(event.target).attr('nav-to')))
+            if($(event.target).attr('nav-to') != null && $(event.target).attr('nav-to') != ''){
+                wireApp.router.navigate("screen/" + $(event.target).attr('nav-to'), {trigger:true});
             }
 
-        },
-        navToScreenId:function (id) {
-            wireApp.router.navigate("screen/" + id);
-        },
-        navToScreenIndex:function (screenIndex) {
-            wireApp.router.navigate("screen/" + screenIndex);
+
         },
         render:function () {
 
