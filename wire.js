@@ -22,9 +22,9 @@ $(document).ready(function () {
         },
 
         screen:function (screenIndexOrID) {
-            if(isNaN(parseInt(screenIndexOrID))){
+            if (isNaN(parseInt(screenIndexOrID))) {
                 wireApp.appState.setCurrentScreenIndex($('#' + screenIndexOrID).index());
-            }else{
+            } else {
                 wireApp.appState.setCurrentScreenIndex(screenIndexOrID);
             }
         }
@@ -61,11 +61,9 @@ $(document).ready(function () {
     /*
      This is the base view class we will be extending screens off of.
      It does the following:
-     1. Reads the screeb-path attribute for the screen's div tag
+     1. Reads the content-path attribute for the screen's div tag
      2. Loads the template source asynchronously
-     3. Compiles the template asynchronously
-     4. Renders the template asynchronously
-     5. Injects rendered HTML code into div
+     3. Injects HTML code into div
 
      NOTE: This looks more complicated than it should because of JS's scoping issues/bad habits with async calls
      */
@@ -73,7 +71,7 @@ $(document).ready(function () {
         contentURL:null,
         contentFileName:null,
         initExternalContent:function () {
-            this.contentURL = $(this.el).attr('screen-path');
+            this.contentURL = $(this.el).attr('content-path');
             if (this.contentURL) {
                 this.loadAndRenderContent(this.contentURL);
             }
@@ -94,8 +92,19 @@ $(document).ready(function () {
                     view.onContentRendered();
                 }
             };
+        },
+        render:function () {
+            this.renderPartials();
+        },
+        renderPartials:function () {
+            var partialDivs = $(this.el).find(".partial");
+            for (var i = 0; i < partialDivs.length; i++) {
+                var partial = new Wire.ExternalContentView({el:partialDivs[i]});
+                partial.initExternalContent();
+            }
         }
     })
+
 
     //Class for the main app view. Responsible for instantiating ScreenViews
     Wire.AppView = Backbone.View.extend({
@@ -112,9 +121,6 @@ $(document).ready(function () {
             for (var i = 0; i < screenDivs.length; i++) {
                 new Wire.ScreenView({el:screenDivs[i]});
             }
-        },
-        render:function () {
-
         }
     });
 
@@ -158,8 +164,9 @@ $(document).ready(function () {
                 $(this.el).removeClass('hidden');
             } else {
                 $(this.el).addClass('hidden');
-
             }
+
+            this.renderPartials();
         }
     })
 
