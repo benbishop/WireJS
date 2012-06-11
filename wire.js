@@ -27,6 +27,9 @@ $(document).ready(function () {
             } else {
                 wireApp.appState.setCurrentScreenIndex(screenIndexOrID);
             }
+            if(onScreenChanged){
+                onScreenChanged(screenIndexOrID, wireApp.appState.getCurrentScreenIndex());
+            }
         }
     })
 
