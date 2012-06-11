@@ -142,11 +142,35 @@ $(document).ready(function () {
         }
     })
 
+    Wire.PreviousScreenButton = Backbone.View.extend({
+        el:$('.prevScreenButton'),
+        model:wireApp.appState,
+        events:{
+            "click":"onClick"
+        },
+        onClick:function () {
+            wireApp.router.navigate("screen/" + (this.model.getCurrentScreenIndex() - 1), {trigger:true});
+        }
+    })
+
+    Wire.NextScreenButton = Backbone.View.extend({
+        el:$('.nextScreenButton'),
+        model:wireApp.appState,
+        events:{
+            "click":"onClick"
+        },
+        onClick:function () {
+            wireApp.router.navigate("screen/" + (this.model.getCurrentScreenIndex() + 1), {trigger:true});
+        }
+    })
+
 ////////////////////////////////
 // Kick off
 ///////////////////////////////
 
     wireApp.AppView = new Wire.AppView;
+    wireApp.PreviousScreenButton = new Wire.PreviousScreenButton;
+    wireApp.NextScreenButton = new Wire.NextScreenButton;
 
     wireApp.router = new AppRouter();
 
@@ -164,6 +188,7 @@ $(document).ready(function () {
 
     function disableSelection(event) {
         var target = event.target;
+
         if (typeof target.onselectstart != "undefined") //IE route
             target.onselectstart = function () {
                 return false
