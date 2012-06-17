@@ -172,6 +172,11 @@ $(document).ready(function () {
         createClickHandler:function(element){
             var element = element;
             return function(){
+
+                if(!onNavTo || !onNavTo(element)){
+                    return;
+                }
+
                 if($(element).attr('nav-to') != null && $(element).attr('nav-to') != ''){
                     wireApp.router.navigate("screen/" + $(element).attr('nav-to'), {trigger:true});
                 }
